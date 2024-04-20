@@ -31,51 +31,47 @@ namespace wf_SecretoBlockchain
         Thread clientThread;
         private void Server()
         {
-            string ip = "127.0.0.1"; // IP-адрес сервера
+            string ip = "127.0.0.1"; // IP-Г Г¤Г°ГҐГ± Г±ГҐГ°ГўГҐГ°Г 
             textBox1.Text = ip;
             if (textBox1.Text != null)
             {
                 ip = textBox1.Text;
             }
 
-            int port = 8080; // Порт сервера
+            int port = 8080; // ГЏГ®Г°ГІ Г±ГҐГ°ГўГҐГ°Г 
             textBox2.Text = port.ToString();
             if (textBox2.Text != null)
             {
                 port = int.Parse(textBox2.Text);
             }
 
-            // Создаем TCP сокет
+            // Г‘Г®Г§Г¤Г ГҐГ¬ TCP Г±Г®ГЄГҐГІ
             var tcpListener = new TcpListener(IPAddress.Parse(ip), port);
 
             try
             {
-                // Начинаем прослушивание входящих соединений
                 tcpListener.Start();
-                Logs.Items.Add("Сервер запущен.");
+                Logs.Items.Add("Г‘ГҐГ°ГўГҐГ° Г§Г ГЇГіГ№ГҐГ­.");
 
                 while (true)
                 {
-                    // Принимаем входящее подключение
                     var clientSocket = tcpListener.AcceptSocket();
                     ClientsLogs.Items.Add(clientSocket.RemoteEndPoint.ToString());
                     lock (lockObject)
                     {
-                        activeConnections.Add(clientSocket); // Добавляем клиента в список активных подключений
+                        activeConnections.Add(clientSocket); // Г„Г®ГЎГ ГўГ«ГїГҐГ¬ ГЄГ«ГЁГҐГ­ГІГ  Гў Г±ГЇГЁГ±Г®ГЄ
                     }
 
-                    // Создаем новый поток для обработки соединения с клиентом
                     clientThread = new Thread(() => HandleClient(clientSocket));
                     clientThread.Start();
                 }
             }
             catch (Exception ex)
             {
-                Logs.Items.Add("Ошибка: " + ex.Message);
+                Logs.Items.Add("ГЋГёГЁГЎГЄГ : " + ex.Message);
             }
             finally
             {
-                // Останавливаем прослушивание
                 tcpListener.Stop();
             }
         }
@@ -86,13 +82,11 @@ namespace wf_SecretoBlockchain
             {
                 while (true)
                 {
-                    // Получаем сообщение от клиента
                     byte[] buffer = new byte[1024];
                     int bytesRead = clientSocket.Receive(buffer);
                     string message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
                     Logs.Items.Add(message);
 
-                    // Отправляем сообщение всем остальным клиентам
                     lock (lockObject)
                     {
                         foreach (var connection in activeConnections)
@@ -107,11 +101,11 @@ namespace wf_SecretoBlockchain
             }
             catch (Exception ex)
             {
-                Logs.Items.Add("Ошибка обработки клиента: " + ex.Message);
+                Logs.Items.Add("ГЋГёГЁГЎГЄГ  Г®ГЎГ°Г ГЎГ®ГІГЄГЁ ГЄГ«ГЁГҐГ­ГІГ : " + ex.Message);
             }
             finally
             {
-                // Закрываем соединение с клиентом и удаляем его из списка активных подключений
+                // Г‡Г ГЄГ°Г»ГўГ ГҐГ¬ Г±Г®ГҐГ¤ГЁГ­ГҐГ­ГЁГҐ Г± ГЄГ«ГЁГҐГ­ГІГ®Г¬ ГЁ ГіГ¤Г Г«ГїГҐГ¬ ГҐГЈГ® ГЁГ§ Г±ГЇГЁГ±ГЄГ  Г ГЄГІГЁГўГ­Г»Гµ ГЇГ®Г¤ГЄГ«ГѕГ·ГҐГ­ГЁГ©
                 lock (lockObject)
                 {
                     activeConnections.Remove(clientSocket);
