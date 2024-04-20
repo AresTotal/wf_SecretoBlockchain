@@ -33,37 +33,34 @@ namespace wf_SecretoClient
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string ip = "127.0.0.1"; // IP-адрес сервера
+            string ip = "127.0.0.1"; // IP-Г Г¤Г°ГҐГ± Г±ГҐГ°ГўГҐГ°Г 
             textBox1.Text = ip;
             if (textBox1.Text != null)
             {
                 ip = textBox1.Text;
             }
 
-            int port = 8080; // Порт сервера
+            int port = 8080; // ГЏГ®Г°ГІ Г±ГҐГ°ГўГҐГ°Г 
             textBox2.Text = port.ToString();
             if (textBox2.Text != null)
             {
                 port = int.Parse(textBox2.Text);
             }
 
-            //Публичный ключ
+            //ГЏГіГЎГ«ГЁГ·Г­Г»Г© ГЄГ«ГѕГ·
             textBox4.Text = ConvertByteToString(publicKey);
 
-            //Приватный ключ
+            //ГЏГ°ГЁГўГ ГІГ­Г»Г© ГЄГ«ГѕГ·
             textBox5.Text = ConvertByteToString(privateKey);
 
-            // Создаем TCP клиент
             TcpClient client = new TcpClient(ip, port);
 
-            Logs.Items.Add("Подключено к серверу.");
+            Logs.Items.Add("ГЏГ®Г¤ГЄГ«ГѕГ·ГҐГ­Г® ГЄ Г±ГҐГ°ГўГҐГ°Гі.");
 
-            // Получаем поток для отправки и приема данных
             stream = client.GetStream();
 
             try
             {
-                // Создаем отдельный поток для приема сообщений от сервера
                 var receiveThread = new System.Threading.Thread(() =>
                 {
                     while (true)
@@ -77,50 +74,48 @@ namespace wf_SecretoClient
                         nonce = Convert.FromBase64String(nonceBase64);
                         textBox6.Text = nonceBase64;
                         string decryptedText = Decrypt(encryptedMessage, sharedKey, nonce);
-                        Logs.Items.Add("Сообщение от сервера: " + decryptedText);
+                        Logs.Items.Add("Г‘Г®Г®ГЎГ№ГҐГ­ГЁГҐ Г®ГІ Г±ГҐГ°ГўГҐГ°Г : " + decryptedText);
                     }
                 });
                 receiveThread.Start();
             }
             catch (Exception ex)
             {
-                Logs.Items.Add("Ошибка: " + ex.Message);
+                Logs.Items.Add("ГЋГёГЁГЎГЄГ : " + ex.Message);
             }
         }
 
         private void button2_Click_1(object sender, EventArgs e)
         {
-            string ip = "127.0.0.1"; // IP-адрес сервера
+            string ip = "127.0.0.1"; // IP-Г Г¤Г°ГҐГ± Г±ГҐГ°ГўГҐГ°Г 
             textBox1.Text = ip;
             if (textBox1.Text != null)
             {
                 ip = textBox1.Text;
             }
 
-            int port = 8080; // Порт сервера
+            int port = 8080; // ГЏГ®Г°ГІ Г±ГҐГ°ГўГҐГ°Г 
             textBox2.Text = port.ToString();
             if (textBox2.Text != null)
             {
                 port = int.Parse(textBox2.Text);
             }
 
-            //Публичный ключ
+            //ГЏГіГЎГ«ГЁГ·Г­Г»Г© ГЄГ«ГѕГ·
             textBox4.Text = ConvertByteToString(publicKey);
 
-            //Приватный ключ
+            //ГЏГ°ГЁГўГ ГІГ­Г»Г© ГЄГ«ГѕГ·
             textBox5.Text = ConvertByteToString(privateKey);
 
-            // Создаем TCP клиент
+            // Г‘Г®Г§Г¤Г ГҐГ¬ TCP ГЄГ«ГЁГҐГ­ГІ
             TcpClient client = new TcpClient(ip, port);
 
-            Logs.Items.Add("Подключено к серверу.");
-
-            // Получаем поток для отправки и приема данных
+            Logs.Items.Add("ГЏГ®Г¤ГЄГ«ГѕГ·ГҐГ­Г® ГЄ Г±ГҐГ°ГўГҐГ°Гі.");
+            
             stream = client.GetStream();
 
             try
             {
-                // Создаем отдельный поток для приема сообщений от сервера
                 var receiveThread = new System.Threading.Thread(() =>
                 {
                     while (true)
@@ -134,14 +129,14 @@ namespace wf_SecretoClient
                         nonce = Convert.FromBase64String(nonceBase64);
                         textBox6.Text = nonceBase64;
                         string decryptedText = Decrypt(encryptedMessage, sharedKey, nonce);
-                        Logs.Items.Add("Сообщение от сервера: " + decryptedText);
+                        Logs.Items.Add("Г‘Г®Г®ГЎГ№ГҐГ­ГЁГҐ Г®ГІ Г±ГҐГ°ГўГҐГ°Г : " + decryptedText);
                     }
                 });
                 receiveThread.Start();
             }
             catch (Exception ex)
             {
-                Logs.Items.Add("Ошибка: " + ex.Message);
+                Logs.Items.Add("ГЋГёГЁГЎГЄГ : " + ex.Message);
             }
         }
         private void button8_Click(object sender, EventArgs e)
@@ -158,19 +153,16 @@ namespace wf_SecretoClient
 
                 string nonceBase64 = Convert.ToBase64String(nonce);
 
-                // Конвертируем сообщение в байты
                 byte[] data = Encoding.UTF8.GetBytes(encryptedMessage + "|" + nonceBase64);
 
-                // Отправляем данные на сервер
                 stream.Write(data, 0, data.Length);
 
-                // Закрываем соединение
                 //stream.Close();
                 //client.Close();
             }
             catch (Exception ex)
             {
-                Logs.Items.Add("Ошибка: " + ex.Message);
+                Logs.Items.Add("ГЋГёГЁГЎГЄГ : " + ex.Message);
             }
         }
         static string Encrypt(string message, byte[] sharedKey)
@@ -195,31 +187,31 @@ namespace wf_SecretoClient
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Ошибка при расшифровке сообщения: " + ex.Message);
+                MessageBox.Show("ГЋГёГЁГЎГЄГ  ГЇГ°ГЁ Г°Г Г±ГёГЁГґГ°Г®ГўГЄГҐ Г±Г®Г®ГЎГ№ГҐГ­ГЁГї: " + ex.Message);
                 return null;
             }
         }
         static byte[] GeneratePublicKey()
         {
-            // Генерация ключевой пары Curve25519
+            // ГѓГҐГ­ГҐГ°Г Г¶ГЁГї ГЄГ«ГѕГ·ГҐГўГ®Г© ГЇГ Г°Г» Curve25519
             KeyPair keyPair = PublicKeyBox.GenerateKeyPair();
 
-            // Возврат публичного ключа в формате байтов
+            // Г‚Г®Г§ГўГ°Г ГІ ГЇГіГЎГ«ГЁГ·Г­Г®ГЈГ® ГЄГ«ГѕГ·Г  Гў ГґГ®Г°Г¬Г ГІГҐ ГЎГ Г©ГІГ®Гў
             return keyPair.PublicKey;
         }
         static byte[] GeneratePrivateKey()
         {
-            // Генерация ключевой пары Curve25519
+            // ГѓГҐГ­ГҐГ°Г Г¶ГЁГї ГЄГ«ГѕГ·ГҐГўГ®Г© ГЇГ Г°Г» Curve25519
             KeyPair keyPair = PublicKeyBox.GenerateKeyPair();
 
-            // Возврат приватного ключа в формате байтов
+            // Г‚Г®Г§ГўГ°Г ГІ ГЇГ°ГЁГўГ ГІГ­Г®ГЈГ® ГЄГ«ГѕГ·Г  Гў ГґГ®Г°Г¬Г ГІГҐ ГЎГ Г©ГІГ®Гў
             return keyPair.PrivateKey;
         }
         static KeyPair GenerateKeyPair()
         {
             KeyPair keyPair = PublicKeyBox.GenerateKeyPair();
 
-            // Возврат приватного и публичного ключа в формате байтов
+            // Г‚Г®Г§ГўГ°Г ГІ ГЇГ°ГЁГўГ ГІГ­Г®ГЈГ® ГЁ ГЇГіГЎГ«ГЁГ·Г­Г®ГЈГ® ГЄГ«ГѕГ·Г  Гў ГґГ®Г°Г¬Г ГІГҐ ГЎГ Г©ГІГ®Гў
             return keyPair;
         }
         private static string ConvertByteToString(byte[] data)
